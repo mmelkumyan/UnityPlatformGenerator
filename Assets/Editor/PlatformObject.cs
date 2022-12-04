@@ -30,6 +30,7 @@ public class PlatformObject : Editor
         surfaceGenerator = surface.GetComponent<SurfaceGenerator>();
         surfaceGenerator.spline = platformComputer;
         surfaceGenerator.extrude = 0.1f;
+        surfaceGenerator.expand = 0.05f;
         surfaceGenerator.offset = new Vector3(0f, -0.1f, 0f);
 
         wall = new GameObject("Wall", typeof(SurfaceGenerator), typeof(MeshRenderer), typeof(MeshFilter));
@@ -38,6 +39,6 @@ public class PlatformObject : Editor
         wallGenerator = wall.GetComponent<SurfaceGenerator>();
         wallGenerator.spline = platformComputer;
         wallGenerator.extrude = -1f;
-        wallGenerator.offset = new Vector3(0f, -0.1f, 0f);
+        wallGenerator.offset = new Vector3(0f, -0.05f, 0f);
     }
 }
