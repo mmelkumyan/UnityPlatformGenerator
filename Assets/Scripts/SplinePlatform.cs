@@ -37,7 +37,7 @@ public class SplinePlatform : MonoBehaviour
         platformDepth = -wall.extrude;
         surfaceUVScale = surface.uvScale;
         surfaceSideUVScale = surface.sideUvScale;
-        wallUVScale = wall.uvScale;
+        wallUVScale = wall.sideUvScale;
     }
 
     internal void SyncMaterials()
@@ -50,7 +50,7 @@ public class SplinePlatform : MonoBehaviour
     {
         surface.uvScale = surfaceUVScale;
         surface.sideUvScale = surfaceSideUVScale;
-        wall.uvScale = wallUVScale;
+        wall.sideUvScale = wallUVScale;
     }
 
     internal void SyncShape()
@@ -112,9 +112,12 @@ public class SplinePlatformEditor : Editor
         {
             EditorGUILayout.Space();
 
-            EditorGUI.BeginChangeCheck();
+            
 
             EditorGUILayout.LabelField("UV Coordinates", EditorStyles.boldLabel);
+
+            EditorGUI.BeginChangeCheck();
+
             script.surfaceUVScale = EditorGUILayout.Vector2Field("UV Scale", script.surfaceUVScale);
             script.surfaceSideUVScale = EditorGUILayout.Vector2Field("Side UV Scale", script.surfaceSideUVScale);
 
@@ -134,9 +137,12 @@ public class SplinePlatformEditor : Editor
         {
             EditorGUILayout.Space();
 
-            EditorGUI.BeginChangeCheck();
+            
 
             EditorGUILayout.LabelField("Shape", EditorStyles.boldLabel);
+
+            EditorGUI.BeginChangeCheck();
+
             float depth = EditorGUILayout.FloatField("Platform Depth", script.platformDepth);
 
             if (EditorGUI.EndChangeCheck()) 
@@ -146,11 +152,14 @@ public class SplinePlatformEditor : Editor
                 script.SyncShape();
             }
 
-            EditorGUI.BeginChangeCheck();
+            
 
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField("UV Coordinates", EditorStyles.boldLabel);
+
+            EditorGUI.BeginChangeCheck();
+
             script.wallUVScale = EditorGUILayout.Vector2Field("Side UV Scale", script.wallUVScale);
 
             if (EditorGUI.EndChangeCheck()) 
