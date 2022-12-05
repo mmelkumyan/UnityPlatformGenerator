@@ -66,8 +66,8 @@ public class SplinePlatformEditor : Editor
     SplinePlatform script;
 
     bool showMaterialParameters = true;
-    bool showSurfaceParameters;
-    bool showWallParameters;
+    bool showSurfaceParameters = true;
+    bool showWallParameters = true;
 
     private void OnEnable()
     {
@@ -87,91 +87,46 @@ public class SplinePlatformEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        //DrawDefaultInspector();
+        // DrawDefaultInspector();
+        EditorGUI.BeginChangeCheck();
 
+        // Material section
         showMaterialParameters = EditorGUILayout.BeginFoldoutHeaderGroup(showMaterialParameters, "Materials");
-        if(showMaterialParameters)
-        {
-            EditorGUI.BeginChangeCheck();
-
+        if(showMaterialParameters) {
             script.surfaceMat = EditorGUILayout.ObjectField("Surface Material", script.surfaceMat, typeof(Material), false) as Material;
             script.wallMat = EditorGUILayout.ObjectField("Wall Material", script.wallMat, typeof(Material), false) as Material;
-
-            if(EditorGUI.EndChangeCheck()) 
-            { 
-                Undo.RecordObject(target, "Changed Mats"); 
-                script.SyncMaterials(); 
-            }
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
 
         EditorGUILayout.Space();
 
+        // Surface section
         showSurfaceParameters = EditorGUILayout.BeginFoldoutHeaderGroup(showSurfaceParameters, "Surface");
-        if(showSurfaceParameters)
-        {
-            EditorGUILayout.Space();
-
-            
-
+        if(showSurfaceParameters) {
             EditorGUILayout.LabelField("UV Coordinates", EditorStyles.boldLabel);
-
-            EditorGUI.BeginChangeCheck();
-
             script.surfaceUVScale = EditorGUILayout.Vector2Field("UV Scale", script.surfaceUVScale);
             script.surfaceSideUVScale = EditorGUILayout.Vector2Field("Side UV Scale", script.surfaceSideUVScale);
-
-            if (EditorGUI.EndChangeCheck()) 
-            { 
-                Undo.RecordObject(target, "Changed UV"); 
-                script.SyncUV(); 
-            }
-
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
 
         EditorGUILayout.Space();
 
+        // Wall section
         showWallParameters = EditorGUILayout.BeginFoldoutHeaderGroup(showWallParameters, "Wall");
-        if (showWallParameters)
-        {
-            EditorGUILayout.Space();
-
-            
-
+        if (showWallParameters) {
             EditorGUILayout.LabelField("Shape", EditorStyles.boldLabel);
-
-            EditorGUI.BeginChangeCheck();
-
-            float depth = EditorGUILayout.FloatField("Platform Depth", script.platformDepth);
-
-            if (EditorGUI.EndChangeCheck()) 
-            { 
-                Undo.RecordObject(target, "Changed Shape");
-                script.platformDepth = depth;
-                script.SyncShape();
-            }
-
-            
+            script.platformDepth = EditorGUILayout.FloatField("Platform Depth", script.platformDepth);
 
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField("UV Coordinates", EditorStyles.boldLabel);
-
-            EditorGUI.BeginChangeCheck();
-
             script.wallUVScale = EditorGUILayout.Vector2Field("Side UV Scale", script.wallUVScale);
-
-            if (EditorGUI.EndChangeCheck()) 
-            {
-                Undo.RecordObject(target, "Changed UV");
-                script.SyncUV(); 
-            }
-
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
 
-
+        if (EditorGUI.EndChangeCheck()) {
+            SyncAll();            
+        } 
     }
 
 
