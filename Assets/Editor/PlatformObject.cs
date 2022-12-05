@@ -11,6 +11,7 @@ public class PlatformObject : Editor
     {
         GameObject platform;
         SplineComputer platformComputer;
+        SplinePlatform iFace;
 
         GameObject surface;
         SurfaceGenerator surfaceGenerator;
@@ -18,9 +19,10 @@ public class PlatformObject : Editor
         GameObject wall;
         SurfaceGenerator wallGenerator;
 
-        platform = new GameObject("Platform", typeof(SplineComputer));
+        platform = new GameObject("Platform", typeof(SplineComputer), typeof(SplinePlatform));
 
         platformComputer = platform.GetComponent<SplineComputer>();
+        iFace = platform.GetComponent<SplinePlatform>();
         platformComputer.sampleRate = 20;
         platformComputer.type = Spline.Type.BSpline;
 
@@ -40,5 +42,8 @@ public class PlatformObject : Editor
         wallGenerator.spline = platformComputer;
         wallGenerator.extrude = -1f;
         wallGenerator.offset = new Vector3(0f, -0.05f, 0f);
+
+        iFace.surface = surfaceGenerator;
+        iFace.wall = wallGenerator;
     }
 }
