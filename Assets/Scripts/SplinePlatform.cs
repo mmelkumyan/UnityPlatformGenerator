@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UIElements;
+using Unity.VisualScripting;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -30,7 +31,7 @@ public class SplinePlatform : MonoBehaviour
     public Vector2 surfaceSideUVScale;
     public Vector2 wallUVScale;
 
-    public void Sync()
+    internal void SyncEditor()
     {
         platformDepth = -wall.extrude;
         surfaceUVScale = surface.uvScale;
@@ -38,16 +39,22 @@ public class SplinePlatform : MonoBehaviour
         wallUVScale = wall.uvScale;
     }
 
-    private void OnValidate()
+    internal void SyncMaterials()
     {
-        wall.extrude = -platformDepth;
+        surface.GetComponent<MeshRenderer>().material = surfaceMat;
+        wall.GetComponent<MeshRenderer>().material = wallMat;
+    }
 
+    internal void SyncUV()
+    {
         surface.uvScale = surfaceUVScale;
         surface.sideUvScale = surfaceSideUVScale;
         wall.uvScale = wallUVScale;
+    }
 
-        surface.GetComponent<MeshRenderer>().material = surfaceMat;
-        wall.GetComponent<MeshRenderer>().material = wallMat;
+    internal void SyncShape()
+    {
+        wall.extrude = -platformDepth;
     }
 }
 
@@ -57,12 +64,97 @@ public class SplinePlatformEditor : Editor
 {
     SplinePlatform script;
 
+    bool showMaterialParameters = true;
+
+    bool showSurfaceParameters;
+
+    bool showWallParameters;
+
     private void OnEnable()
     {
         script = (SplinePlatform)target;
-        script.Sync();
+        script.SyncEditor();
 
     }
+
+    public override void OnInspectorGUI()
+    {
+        //DrawDefaultInspector();
+
+        showMaterialParameters = EditorGUILayout.BeginFoldoutHeaderGroup(showMaterialParameters, "Materials");
+        if(showMaterialParameters)
+        {
+            EditorGUI.BeginChangeCheck();
+
+            script.surfaceMat = EditorGUILayout.ObjectField("Surface Material", script.surfaceMat, typeof(Material), false) as Material;
+            script.wallMat = EditorGUILayout.ObjectField("Wall Material", script.wallMat, typeof(Material), false) as Material;
+
+            if(EditorGUI.EndChangeCheck()) { script.SyncMaterials(); }
+        }
+        EditorGUILayout.EndFoldoutHeaderGroup();
+
+        EditorGUILayout.Space();
+
+        showSurfaceParameters = EditorGUILayout.BeginFoldoutHeaderGroup(showSurfaceParameters, "Surface");
+        if(showSurfaceParameters)
+        {
+            EditorGUILayout.Space();
+
+            EditorGUI.BeginChangeCheck();
+
+            EditorGUILayout.LabelField("UV Coordinates", EditorStyles.boldLabel);
+            script.surfaceUVScale = EditorGUILayout.Vector2Field("UV Scale", script.surfaceUVScale);
+            script.surfaceSideUVScale = EditorGUILayout.Vector2Field("Side UV Scale", script.surfaceSideUVScale);
+
+            if (EditorGUI.EndChangeCheck()) { script.SyncUV(); }
+
+        }
+        EditorGUILayout.EndFoldoutHeaderGroup();
+
+        EditorGUILayout.Space();
+
+        showWallParameters = EditorGUILayout.BeginFoldoutHeaderGroup(showWallParameters, "Wall");
+        if (showWallParameters)
+        {
+            EditorGUILayout.Space();
+
+            EditorGUI.BeginChangeCheck();
+
+            EditorGUILayout.LabelField("Shape", EditorStyles.boldLabel);
+            script.platformDepth = EditorGUILayout.FloatField("Platform Depth", script.platformDepth);
+
+            if (EditorGUI.EndChangeCheck()) { script.SyncShape(); }
+
+            EditorGUI.BeginChangeCheck();
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("UV Coordinates", EditorStyles.boldLabel);
+            script.wallUVScale = EditorGUILayout.Vector2Field("Side UV Scale", script.wallUVScale);
+
+            if (EditorGUI.EndChangeCheck()) { script.SyncUV(); }
+
+        }
+        EditorGUILayout.EndFoldoutHeaderGroup();
+
+
+    }
+
+
+
+    /*
+    public override VisualElement CreateInspectorGUI()
+    {
+        VisualElement inspector = new VisualElement();
+
+        Foldout materialView = new Foldout();
+        materialView.name = "Materials";
+        materialView.text = "Materials";
+        //materialView.Add(EditorGUILayout.ObjectField(script.surfaceMat, typeof(Material), false));
+
+        inspector.Add(materialView);
+        return inspector;
+    }*/
 }
 #endif
 
