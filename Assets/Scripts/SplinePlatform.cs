@@ -17,6 +17,7 @@ using UnityEditor;
  *  Surface Side UV Scale
  *  Wall Side UV Scale
  */
+[Serializable]
 public class SplinePlatform : MonoBehaviour
 {
     [HideInInspector] public SurfaceGenerator surface;
@@ -65,9 +66,7 @@ public class SplinePlatformEditor : Editor
     SplinePlatform script;
 
     bool showMaterialParameters = true;
-
     bool showSurfaceParameters;
-
     bool showWallParameters;
 
     private void OnEnable()
@@ -75,6 +74,15 @@ public class SplinePlatformEditor : Editor
         script = (SplinePlatform)target;
         script.SyncEditor();
 
+        Undo.undoRedoPerformed += SyncAll;
+
+    }
+
+    private void SyncAll()
+    {
+        script.SyncMaterials();
+        script.SyncUV();
+        script.SyncShape();
     }
 
     public override void OnInspectorGUI()
@@ -89,7 +97,11 @@ public class SplinePlatformEditor : Editor
             script.surfaceMat = EditorGUILayout.ObjectField("Surface Material", script.surfaceMat, typeof(Material), false) as Material;
             script.wallMat = EditorGUILayout.ObjectField("Wall Material", script.wallMat, typeof(Material), false) as Material;
 
-            if(EditorGUI.EndChangeCheck()) { script.SyncMaterials(); }
+            if(EditorGUI.EndChangeCheck()) 
+            { 
+                Undo.RecordObject(target, "Changed Mats"); 
+                script.SyncMaterials(); 
+            }
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
 
@@ -106,7 +118,11 @@ public class SplinePlatformEditor : Editor
             script.surfaceUVScale = EditorGUILayout.Vector2Field("UV Scale", script.surfaceUVScale);
             script.surfaceSideUVScale = EditorGUILayout.Vector2Field("Side UV Scale", script.surfaceSideUVScale);
 
-            if (EditorGUI.EndChangeCheck()) { script.SyncUV(); }
+            if (EditorGUI.EndChangeCheck()) 
+            { 
+                Undo.RecordObject(target, "Changed UV"); 
+                script.SyncUV(); 
+            }
 
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
@@ -121,9 +137,14 @@ public class SplinePlatformEditor : Editor
             EditorGUI.BeginChangeCheck();
 
             EditorGUILayout.LabelField("Shape", EditorStyles.boldLabel);
-            script.platformDepth = EditorGUILayout.FloatField("Platform Depth", script.platformDepth);
+            float depth = EditorGUILayout.FloatField("Platform Depth", script.platformDepth);
 
-            if (EditorGUI.EndChangeCheck()) { script.SyncShape(); }
+            if (EditorGUI.EndChangeCheck()) 
+            { 
+                Undo.RecordObject(target, "Changed Shape");
+                script.platformDepth = depth;
+                script.SyncShape();
+            }
 
             EditorGUI.BeginChangeCheck();
 
@@ -132,7 +153,11 @@ public class SplinePlatformEditor : Editor
             EditorGUILayout.LabelField("UV Coordinates", EditorStyles.boldLabel);
             script.wallUVScale = EditorGUILayout.Vector2Field("Side UV Scale", script.wallUVScale);
 
-            if (EditorGUI.EndChangeCheck()) { script.SyncUV(); }
+            if (EditorGUI.EndChangeCheck()) 
+            {
+                Undo.RecordObject(target, "Changed UV");
+                script.SyncUV(); 
+            }
 
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
