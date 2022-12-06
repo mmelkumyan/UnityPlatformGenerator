@@ -21,12 +21,15 @@ using UnityEditor;
 public class SplinePlatform : MonoBehaviour
 {
     [HideInInspector] public SurfaceGenerator surface;
-    [HideInInspector] public SurfaceGenerator wall;
+    [HideInInspector] public PathGenerator wall;
 
     public Material surfaceMat;
     public Material wallMat;
 
     public float platformDepth;
+    public AnimationCurve wallCurve;
+    public float wallCurveScale;
+    public int wallResolution;
 
     public Vector2 surfaceUVScale;
     public Vector2 surfaceSideUVScale;
@@ -34,28 +37,45 @@ public class SplinePlatform : MonoBehaviour
 
     internal void SyncEditor()
     {
-        platformDepth = -wall.extrude;
+        // Initialize editor with component values
+        // Shape
+        platformDepth = wall.size;
+        
+        wallCurve = wall.shape;
+        wallCurveScale = wall.shapeExposure;
+        wallResolution = wall.slices;
+        
+        // UVs
         surfaceUVScale = surface.uvScale;
         surfaceSideUVScale = surface.sideUvScale;
-        wallUVScale = wall.sideUvScale;
-    }
+        wallUVScale = wall.uvScale;
 
-    internal void SyncMaterials()
-    {
-        surface.GetComponent<MeshRenderer>().material = surfaceMat;
-        wall.GetComponent<MeshRenderer>().material = wallMat;
-    }
-
-    internal void SyncUV()
-    {
-        surface.uvScale = surfaceUVScale;
-        surface.sideUvScale = surfaceSideUVScale;
-        wall.sideUvScale = wallUVScale;
+        // Materials
+        surfaceMat = surface.GetComponent<Renderer>().sharedMaterial;
+        wallMat = wall.GetComponent<Renderer>().sharedMaterial;
     }
 
     internal void SyncShape()
     {
-        wall.extrude = -platformDepth;
+        wall.size = platformDepth;
+        wall.offset = new Vector3(0f, -platformDepth/2, 0f);
+        
+        wall.shape = wallCurve;
+        wall.shapeExposure = wallCurveScale;
+        wall.slices = wallResolution;
+    }
+    
+    internal void SyncUV()
+    {
+        surface.uvScale = surfaceUVScale;
+        surface.sideUvScale = surfaceSideUVScale;
+        wall.uvScale = wallUVScale;
+    }
+    
+    internal void SyncMaterials()
+    {
+        surface.GetComponent<MeshRenderer>().material = surfaceMat;
+        wall.GetComponent<MeshRenderer>().material = wallMat;
     }
 }
 
@@ -75,7 +95,6 @@ public class SplinePlatformEditor : Editor
         script.SyncEditor();
 
         Undo.undoRedoPerformed += SyncAll;
-
     }
 
     private void SyncAll()
@@ -116,7 +135,10 @@ public class SplinePlatformEditor : Editor
         if (showWallParameters) {
             EditorGUILayout.LabelField("Shape", EditorStyles.boldLabel);
             script.platformDepth = EditorGUILayout.FloatField("Platform Depth", script.platformDepth);
-
+            script.wallCurve = EditorGUILayout.CurveField("Curve", script.wallCurve);
+            script.wallCurveScale = EditorGUILayout.FloatField("Curve Scale", script.wallCurveScale);
+            script.wallResolution = EditorGUILayout.IntField("Resolution", script.wallResolution);
+            
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField("UV Coordinates", EditorStyles.boldLabel);

@@ -17,8 +17,9 @@ public class PlatformObject : Editor
         SurfaceGenerator surfaceGenerator;
 
         GameObject wall;
-        SurfaceGenerator wallGenerator;
+        PathGenerator wallGenerator;
 
+        // Create parent platform object
         platform = new GameObject("Platform", typeof(SplineComputer), typeof(SplinePlatform));
 
         platformComputer = platform.GetComponent<SplineComputer>();
@@ -26,7 +27,8 @@ public class PlatformObject : Editor
         platformComputer.sampleRate = 20;
         platformComputer.type = Spline.Type.BSpline;
 
-        surface = new GameObject("Surface", typeof(SurfaceGenerator), typeof(MeshRenderer), typeof(MeshFilter));
+        // Create child surface object
+        surface = new GameObject("Surface", typeof(SurfaceGenerator));
         surface.transform.parent = platform.transform;
 
         surfaceGenerator = surface.GetComponent<SurfaceGenerator>();
@@ -35,13 +37,19 @@ public class PlatformObject : Editor
         surfaceGenerator.expand = 0.05f;
         surfaceGenerator.offset = new Vector3(0f, -0.1f, 0f);
 
-        wall = new GameObject("Wall", typeof(SurfaceGenerator), typeof(MeshRenderer), typeof(MeshFilter));
+        // Create child wall object
+        wall = new GameObject("Wall", typeof(PathGenerator));
         wall.transform.parent = platform.transform;
 
-        wallGenerator = wall.GetComponent<SurfaceGenerator>();
+        wallGenerator = wall.GetComponent<PathGenerator>();
         wallGenerator.spline = platformComputer;
-        wallGenerator.extrude = -1f;
-        wallGenerator.offset = new Vector3(0f, -0.05f, 0f);
+        wallGenerator.size = 10f;
+        wallGenerator.offset = new Vector3(0f, -5.0f, 0f);
+        wallGenerator.rotation = 90f;
+        wallGenerator.useShapeCurve = true;
+        wallGenerator.shapeExposure = 10f;
+        wallGenerator.slices = 20;
+        wallGenerator.shape = AnimationCurve.Constant(0, 1, 0);
 
         iFace.surface = surfaceGenerator;
         iFace.wall = wallGenerator;
