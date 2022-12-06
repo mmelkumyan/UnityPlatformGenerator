@@ -112,6 +112,12 @@ public class SplinePlatformEditor : Editor
     bool showSurfaceParameters = true;
     bool showWallParameters = true;
 
+    Material surfaceMat, wallMat;
+    AnimationCurve wallCurve;
+    Vector2 surfaceUVScale, surfaceSideUVScale, wallUVScale;
+    float surfaceDepth, surfaceExpand, wallDepth, wallCurveScale;
+    int wallResolution;
+
     private void OnEnable()
     {
         script = (SplinePlatform)target;
@@ -122,6 +128,9 @@ public class SplinePlatformEditor : Editor
 
     private void SyncAll()
     {
+        if (script == null)
+            return;
+
         script.SyncMaterials();
         script.SyncUV();
         script.SyncShape();
@@ -135,8 +144,8 @@ public class SplinePlatformEditor : Editor
         // Material section
         showMaterialParameters = EditorGUILayout.BeginFoldoutHeaderGroup(showMaterialParameters, "Materials");
         if(showMaterialParameters) {
-            script.surfaceMat = EditorGUILayout.ObjectField("Surface Material", script.surfaceMat, typeof(Material), false) as Material;
-            script.wallMat = EditorGUILayout.ObjectField("Wall Material", script.wallMat, typeof(Material), false) as Material;
+            surfaceMat = EditorGUILayout.ObjectField("Surface Material", script.surfaceMat, typeof(Material), false) as Material;
+            wallMat = EditorGUILayout.ObjectField("Wall Material", script.wallMat, typeof(Material), false) as Material;
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
 
@@ -146,14 +155,14 @@ public class SplinePlatformEditor : Editor
         showSurfaceParameters = EditorGUILayout.BeginFoldoutHeaderGroup(showSurfaceParameters, "Surface");
         if(showSurfaceParameters) {
             EditorGUILayout.LabelField("Shape", EditorStyles.boldLabel);
-            script.surfaceDepth = EditorGUILayout.FloatField("Depth", script.surfaceDepth);
-            script.surfaceExpand = EditorGUILayout.FloatField("Expand", script.surfaceExpand);
+            surfaceDepth = EditorGUILayout.FloatField("Depth", script.surfaceDepth);
+            surfaceExpand = EditorGUILayout.FloatField("Expand", script.surfaceExpand);
             
             EditorGUILayout.Space();
             
             EditorGUILayout.LabelField("UV Coordinates", EditorStyles.boldLabel);
-            script.surfaceUVScale = EditorGUILayout.Vector2Field("UV Scale", script.surfaceUVScale);
-            script.surfaceSideUVScale = EditorGUILayout.Vector2Field("Side UV Scale", script.surfaceSideUVScale);
+            surfaceUVScale = EditorGUILayout.Vector2Field("UV Scale", script.surfaceUVScale);
+            surfaceSideUVScale = EditorGUILayout.Vector2Field("Side UV Scale", script.surfaceSideUVScale);
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
 
@@ -163,21 +172,38 @@ public class SplinePlatformEditor : Editor
         showWallParameters = EditorGUILayout.BeginFoldoutHeaderGroup(showWallParameters, "Wall");
         if (showWallParameters) {
             EditorGUILayout.LabelField("Shape", EditorStyles.boldLabel);
-            script.wallDepth = EditorGUILayout.FloatField("Depth", script.wallDepth);
-            script.wallCurve = EditorGUILayout.CurveField("Curve", script.wallCurve);
-            script.wallCurveScale = EditorGUILayout.FloatField("Curve Scale", script.wallCurveScale);
-            script.wallResolution = EditorGUILayout.IntField("Resolution", script.wallResolution);
+            wallDepth = EditorGUILayout.FloatField("Depth", script.wallDepth);
+            wallCurve = EditorGUILayout.CurveField("Curve", script.wallCurve);
+            wallCurveScale = EditorGUILayout.FloatField("Curve Scale", script.wallCurveScale);
+            wallResolution = EditorGUILayout.IntField("Resolution", script.wallResolution);
             
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField("UV Coordinates", EditorStyles.boldLabel);
-            script.wallUVScale = EditorGUILayout.Vector2Field("UV Scale", script.wallUVScale);
+            wallUVScale = EditorGUILayout.Vector2Field("UV Scale", script.wallUVScale);
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
 
         EditorGUILayout.Space();
         
         if (EditorGUI.EndChangeCheck()) {
+            Undo.RecordObject(target, "Platform Change");
+
+            script.surfaceMat = surfaceMat;
+            script.wallMat = wallMat;
+
+            script.surfaceDepth = surfaceDepth;
+            script.surfaceExpand = surfaceExpand;
+
+            script.wallDepth = wallDepth;
+            script.wallCurveScale = wallCurveScale;
+            script.wallCurve = wallCurve;
+            script.wallResolution = wallResolution;
+
+            script.surfaceUVScale = surfaceUVScale;
+            script.wallUVScale = wallUVScale;
+            script.surfaceSideUVScale = surfaceSideUVScale;
+
             SyncAll();            
         }
 
