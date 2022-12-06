@@ -48,7 +48,7 @@ public class PlatformObject : Editor
         wallGenerator.rotation = 90f;
         wallGenerator.useShapeCurve = true;
         wallGenerator.shapeExposure = 10f;
-        wallGenerator.slices = 20;
+        wallGenerator.slices = 8;
         wallGenerator.shape = AnimationCurve.Constant(0, 1, 0);
 
         iFace.surface = surfaceGenerator;

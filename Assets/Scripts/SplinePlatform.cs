@@ -38,6 +38,8 @@ public class SplinePlatform : MonoBehaviour
     public Vector2 surfaceSideUVScale;
     public Vector2 wallUVScale;
 
+    public bool bakeButtonToggle = true;
+    
     internal void SyncEditor()
     {
         // Initialize editor with component values
@@ -87,6 +89,16 @@ public class SplinePlatform : MonoBehaviour
     {
         surface.GetComponent<MeshRenderer>().material = surfaceMat;
         wall.GetComponent<MeshRenderer>().material = wallMat;
+    }
+
+    internal void BakeMeshes() {
+        surface.Bake(true, false);
+        wall.Bake(true, false);
+    }
+
+    internal void UnbakeMeshes() {
+        surface.Unbake();
+        wall.Unbake();
     }
 }
 
@@ -163,9 +175,26 @@ public class SplinePlatformEditor : Editor
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
 
+        EditorGUILayout.Space();
+        
         if (EditorGUI.EndChangeCheck()) {
             SyncAll();            
-        } 
+        }
+
+        // Bake/ Rever Bake Toggle
+        if (script.bakeButtonToggle) {
+            if (GUILayout.Button("Bake Meshes")) {
+                script.BakeMeshes();
+                script.bakeButtonToggle = !script.bakeButtonToggle;
+            }
+        }
+        else {
+            if (GUILayout.Button("Revert Bake")) {
+                script.UnbakeMeshes();
+                script.bakeButtonToggle = !script.bakeButtonToggle;
+            }
+        }
+        
     }
 
 
