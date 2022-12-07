@@ -11,11 +11,11 @@
 ### Dependencies
 
 - [Dreamteck Splines](https://assetstore.unity.com/packages/tools/utilities/dreamteck-splines-61926): A Unity package that allows you to draw and generate meshes from splines. 
-  - Draw the spline by clicking `Edit` under the `Spline Computer` component and placing nodes in the scene.
 
 ### Creating a Platform
 - To create a platform, click `GameObject` -> `3D Object` -> `Spline Platform`
   - ![Create spline platform](ui/createSplinePlatform.png)
+  - Draw the spline by clicking `Edit` under the `Spline Computer` component and placing nodes in the scene.
 
 ### Arguments
 
