@@ -1,19 +1,21 @@
 # ANIM T380 - Final
 
 ## Unity Platform Generator
+![Spline example](ui/exampleScene.png)
 
 ### Description
 
 - This tool lets you build procedural platforms in Unity using a spline tool.
-![Spline example](ui/platformGen_01.gif)
+  - ![Spline example](ui/platformGen_01.gif)
 
 ### Dependencies
 
 - [Dreamteck Splines](https://assetstore.unity.com/packages/tools/utilities/dreamteck-splines-61926): A Unity package that allows you to draw and generate meshes from splines. 
+  - Draw the spline by clicking `Edit` under the `Spline Computer` component and placing nodes in the scene.
 
 ### Creating a Platform
 - To create a platform, click `GameObject` -> `3D Object` -> `Spline Platform`
-![Create spline platform](ui/createSplinePlatform.png)
+  - ![Create spline platform](ui/createSplinePlatform.png)
 
 ### Arguments
 
@@ -42,7 +44,22 @@ Unity Interface:
 
 ### Examples
 
-- Drawing spline curve:![Spline example 1](ui/platformGen_02.gif)
-- Assigning materials: ![Spline example 2](ui/platformGen_03.gif)
-- Modifying dimensions: ![Spline example 3](ui/platformGen_04.gif)
-- Assigning a curve to the walls: ![Spline example 4](ui/platformGen_05.gif)
+- Drawing spline curve:
+  - ![Spline example 1](ui/platformGen_02.gif)
+- Assigning materials:
+  -  ![Spline example 2](ui/platformGen_03.gif)
+- Modifying dimensions:
+  -  ![Spline example 3](ui/platformGen_04.gif)
+- Assigning a curve to the walls:
+  -  ![Spline example 4](ui/platformGen_05.gif)
+
+### Know Issues and Limitations
+
+- Topology of non-flat surfaces can be erradic, so flat surfaces are recommended.
+- Walls may clip through the surface when spline is not flat.
+
+### Planned Features
+
+- Auto scale UVs on walls
+- Add foliage cards to edge of platform surface
+- Add option to convert from pro-builder meshes to spline platforms
