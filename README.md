@@ -42,4 +42,7 @@ Unity Interface:
 
 ### Examples
 
-- 
+- Drawing spline curve:![Spline example 1](ui/platformGen_02.gif)
+- Assigning materials: ![Spline example 2](ui/platformGen_03.gif)
+- Modifying dimensions: ![Spline example 3](ui/platformGen_04.gif)
+- Assigning a curve to the walls: ![Spline example 4](ui/platformGen_05.gif)
