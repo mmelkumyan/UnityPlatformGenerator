@@ -116,7 +116,7 @@ public class ConverterWindow : EditorWindow
         spline.Close();
 
         spline.sampleRate = 20;
-        spline.type = Spline.Type.BSpline;
+        spline.type = Spline.Type.CatmullRom;
 
         // Create child surface object
         surface = new GameObject("Surface", typeof(SurfaceGenerator));

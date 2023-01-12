@@ -25,7 +25,7 @@ public class PlatformObject : Editor
         platformComputer = platform.GetComponent<SplineComputer>();
         iFace = platform.GetComponent<SplinePlatform>();
         platformComputer.sampleRate = 20;
-        platformComputer.type = Spline.Type.BSpline;
+        platformComputer.type = Spline.Type.CatmullRom;
 
         // Create child surface object
         surface = new GameObject("Surface", typeof(SurfaceGenerator));
