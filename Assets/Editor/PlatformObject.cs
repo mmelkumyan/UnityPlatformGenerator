@@ -6,7 +6,7 @@ using Dreamteck.Splines;
 
 public class PlatformObject : Editor
 {
-    [MenuItem("GameObject/3D Object/Spline Platform", false, -1)]
+    [MenuItem("Spline Platform Tool/3D Object/Spline Platform", false, -1)]
     public static void SplinePlatform()
     {
         GameObject platform;
